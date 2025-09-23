@@ -14,14 +14,11 @@ import Login from "./pages/Login.jsx";
 function App() {
   return (
     <Router>
-      <Navbar />
       <Routes>
-        <Route path="/" element={<h1>Welcome to LabLogix</h1>} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/student" element={<StudentPortal />} />
-        <Route path="/faculty" element={<FacultyPortal />} />
-        <Route path="/admin" element={<AdminPortal />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/student-dashboard" element={<StudentPortal />} />
+        <Route path="/faculty-dashboard" element={<FacultyPortal />} />
+        <Route path="/admin-dashboard" element={<AdminPortal />} />
       </Routes>
     </Router>
   );
