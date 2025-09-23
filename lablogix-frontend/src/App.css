@@ -44,44 +44,40 @@
   color: #888;
 }
 
-/* ===== Login Page Specific Styles ===== */
-body, html {
+/* ===== Full-page background ===== */
+body, html, #root {
   margin: 0;
-  font-family: Arial, sans-serif;
+  padding: 0;
   height: 100%;
 }
 
-/* Full-screen login page container */
-.login-page {
-  position: relative;
+.full-page {
   height: 100vh;
   width: 100%;
+  background: url('/images/dashboard.jpg') no-repeat center center;
+  background-size: cover;          /* covers full viewport */
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  position: relative;
 }
 
-/* Full-screen background image with dim overlay */
-.login-page::before {
+/* Optional dim overlay for readability */
+.full-page::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/dashboard.jpg'); /* Put your image in public/images/ */
-  background-size: cover;           /* ensures full coverage */
-  background-position: center;      /* keeps image centered */
-  background-repeat: no-repeat;
-  background-attachment: fixed;     /* makes background fixed for nice effect */
-  filter: brightness(0.6);          /* dim overlay for readability */
-  z-index: -1;                      /* behind the login form */
+  background: rgba(0,0,0,0.5);
+  z-index: 1;
 }
 
-/* Login form container */
+/* Login container sits on top */
 .login-container {
-  background: rgba(255, 255, 255, 0.1);   /* glass effect */
+  position: relative;
+  z-index: 2;                     /* above overlay */
+  background: rgba(255, 255, 255, 0.1); /* glass effect */
   backdrop-filter: blur(10px);
   padding: 40px;
   border-radius: 12px;
@@ -89,8 +85,6 @@ body, html {
   text-align: center;
   color: #fff;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  position: relative;
-  z-index: 1;
 }
 
 .login-container h2 {
@@ -146,27 +140,11 @@ body, html {
   background: #e84118;
 }
 
-/* ===== Optional: extra text for links ===== */
-.extra-text {
-  margin-top: 15px;
-  font-size: 0.9rem;
-}
-.extra-text a {
-  color: #ff4757;
-  text-decoration: none;
-}
-.extra-text a:hover {
-  text-decoration: underline;
-}
-
-/* ===== Responsive adjustments ===== */
+/* Responsive */
 @media (max-width: 768px) {
   .login-container {
     width: 90%;
     padding: 30px 20px;
-  }
-  #root {
-    padding: 1rem;
   }
 }
 
@@ -174,10 +152,11 @@ body, html {
   .login-container h2 {
     font-size: 1.5rem;
   }
-  .login-container input {
+  .input-box input {
     padding: 10px;
   }
   .btn {
     padding: 10px;
   }
 }
+
