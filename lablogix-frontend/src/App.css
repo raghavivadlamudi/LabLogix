@@ -81,46 +81,103 @@ body, html {
 
 /* Login form container */
 .login-container {
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 2rem 3rem;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  background: rgba(255, 255, 255, 0.1);   /* glass effect */
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 12px;
+  width: 350px;
   text-align: center;
-  max-width: 400px;
-  width: 90%;
-  z-index: 1;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   position: relative;
+  z-index: 1;
 }
 
-/* Input and button styling */
-.login-container input {
+.login-container h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.input-box {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-box input {
   width: 100%;
-  padding: 0.7rem;
-  margin: 0.5rem 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.login-container button {
-  padding: 0.7rem 1.5rem;
-  margin-top: 1rem;
-  background-color: #646cff;
+  padding: 12px;
   border: none;
-  border-radius: 5px;
-  color: white;
+  border-bottom: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+  outline: none;
+  font-size: 1rem;
+}
+
+.input-box label {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  pointer-events: none;
+  transition: 0.3s;
+  color: #ccc;
+}
+
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+  top: -10px;
+  font-size: 0.8rem;
+  color: #ff4757;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: #ff4757;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #fff;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.login-container button:hover {
-  background-color: #5056e0;
+.btn:hover {
+  background: #e84118;
 }
 
-/* Responsive adjustments for small screens */
-@media (max-width: 480px) {
+/* ===== Optional: extra text for links ===== */
+.extra-text {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+.extra-text a {
+  color: #ff4757;
+  text-decoration: none;
+}
+.extra-text a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive adjustments ===== */
+@media (max-width: 768px) {
   .login-container {
-    padding: 1.5rem;
+    width: 90%;
+    padding: 30px 20px;
   }
+  #root {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
   .login-container h2 {
     font-size: 1.5rem;
+  }
+  .login-container input {
+    padding: 10px;
+  }
+  .btn {
+    padding: 10px;
   }
 }
