@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../App.css'; // make sure CSS is imported if not already
+import "../App.css"; // Make sure this points to your CSS file
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -20,10 +20,7 @@ export default function Login() {
       const data = await res.json();
 
       if (data.success) {
-        // Save token if needed
         localStorage.setItem("token", data.token);
-
-        // Redirect based on role
         if (data.role === "student") navigate("/student-dashboard");
         else if (data.role === "faculty") navigate("/faculty-dashboard");
         else if (data.role === "admin") navigate("/admin-dashboard");
@@ -37,25 +34,30 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container">
+    <div className="hero">
+      <div className="overlay"></div>
+      <div className="login-box">
+        <h2>Login</h2>
         <form onSubmit={handleLogin}>
-          <h2>Login</h2>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">Login</button>
+          <div className="input-box">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <label>Email</label>
+          </div>
+          <div className="input-box">
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <label>Password</label>
+          </div>
+          <button type="submit" className="btn">Login</button>
         </form>
       </div>
     </div>
