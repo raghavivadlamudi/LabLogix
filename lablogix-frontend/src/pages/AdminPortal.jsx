@@ -1,57 +1,49 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-const AdminPortal = () => {
-  const [stats, setStats] = useState({
-    totalStudents: 0,
-    totalSubmissions: 0,
-  });
-
-  // Fetch statistics from backend
-  const fetchStats = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/admin/stats");
-      setStats(res.data);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to fetch statistics");
-    }
-  };
+export default function AdminPortal() {
+  const [adminData, setAdminData] = useState(null);
+  const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
-    fetchStats();
+    // Simulate fetching admin info from localStorage or static data
+    const token = JSON.parse(localStorage.getItem("admin")) || {
+      id: "A101",
+      name: "Admin One",
+      role: "main", // or "sub"
+      department: "CSE" // only for sub admin
+    };
+    setAdminData(token);
+
+    // Define all departments
+    const allDepartments = ["CSE", "AI", "IT", "ECE", "EEE", "MECH", "CIVIL"];
+
+    if (token.role === "main") {
+      setDepartments(allDepartments);
+    } else if (token.role === "sub") {
+      setDepartments([token.department]);
+    }
   }, []);
 
+  if (!adminData) return <p>Loading...</p>;
+
   return (
-    <div className="container">
-      <div className="top-bar">
-        <h1>Admin Portal</h1>
-        <button
-          className="logout-btn"
-          onClick={() => {
-            localStorage.removeItem("token");
-            window.location.href = "/";
-          }}
-        >
-          Logout
-        </button>
+    <div style={{ padding: "2rem" }}>
+      <h2>Admin Portal</h2>
+
+      <div style={{ marginBottom: "2rem", background: "#f5f5f5", padding: "1rem", borderRadius: "8px" }}>
+        <p><strong>Name:</strong> {adminData.name}</p>
+        <p><strong>ID:</strong> {adminData.id}</p>
+        <p><strong>Role:</strong> {adminData.role === "main" ? "Main Admin" : "Sub Admin"}</p>
       </div>
 
-      <div className="section">
-        <h2>Dashboard Statistics</h2>
-        <div className="stats-section">
-          <div className="stat-box">
-            <h3>Total Students</h3>
-            <p>{stats.totalStudents}</p>
-          </div>
-          <div className="stat-box">
-            <h3>Total Submissions</h3>
-            <p>{stats.totalSubmissions}</p>
-          </div>
-        </div>
+      <div>
+        <h3>Accessible Departments</h3>
+        <ul>
+          {departments.map((dept, idx) => (
+            <li key={idx}>{dept}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
-};
-
-export default AdminPortal;
+}
