@@ -1,14 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Components
-import Navbar from "./components/Navbar.jsx";
-
-// Pages
 import StudentPortal from "./pages/StudentPortal.jsx";
 import FacultyPortal from "./pages/FacultyPortal.jsx";
 import AdminPortal from "./pages/AdminPortal.jsx";
-import Register from "./pages/Register.jsx";
+import RegisterStudent from "./pages/RegisterStudent.jsx";
+import RegisterFaculty from "./pages/RegisterFaculty.jsx";
 import Login from "./pages/Login.jsx";
 
 function App() {
@@ -19,6 +16,8 @@ function App() {
         <Route path="/student-dashboard" element={<StudentPortal />} />
         <Route path="/faculty-dashboard" element={<FacultyPortal />} />
         <Route path="/admin-dashboard" element={<AdminPortal />} />
+        <Route path="/register-student" element={<RegisterStudent />} />
+        <Route path="/register-faculty" element={<RegisterFaculty />} />
       </Routes>
     </Router>
   );

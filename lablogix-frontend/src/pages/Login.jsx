@@ -7,26 +7,29 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  // Static users for testing
+  const users = [
+    { email: "admin1@gmail.com", password: "admin123", role: "admin" },
+    { email: "faculty1@gmail.com", password: "faculty123", role: "faculty" },
+    { email: "student1@gmail.com", password: "student123", role: "student" }
+  ];
+
+  const handleLogin = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        if (data.role === "student") navigate("/student-dashboard");
-        else if (data.role === "faculty") navigate("/faculty-dashboard");
-        else if (data.role === "admin") navigate("/admin-dashboard");
-      } else {
-        alert("Invalid credentials");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong");
+
+    // Find user from static array
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+      // Save role in localStorage (optional)
+      localStorage.setItem("role", user.role);
+
+      // Navigate based on role
+      if (user.role === "admin") navigate("/admin-dashboard");
+      else if (user.role === "faculty") navigate("/faculty-dashboard");
+      else if (user.role === "student") navigate("/student-dashboard");
+    } else {
+      alert("Invalid credentials");
     }
   };
 
