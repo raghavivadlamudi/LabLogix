@@ -1,9 +1,11 @@
+// index.js (existing)
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
 const authRoutes = require("./routes/auth");
 const submissionRoutes = require("./routes/submission");
+const adminRoutes = require("./routes/admin"); // <--- add this
 
 const app = express();
 app.use(cors());
@@ -18,6 +20,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/lablogix")
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/submissions", submissionRoutes);
+app.use("/api/admin", adminRoutes); // <--- add this
 
 // Test route
 app.get("/", (req, res) => res.send("Backend is running!"));
