@@ -9,7 +9,7 @@ export default function AdminPortal() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get admin from localStorage (or backend later)
+    // Get admin from localStorage
     const token = JSON.parse(localStorage.getItem("admin")) || {
       id: "A101",
       name: "Admin One",
@@ -49,29 +49,15 @@ export default function AdminPortal() {
           borderRadius: "8px",
         }}
       >
-        <p>
-          <strong>Name:</strong> {adminData.name}
-        </p>
-        <p>
-          <strong>ID:</strong> {adminData.id}
-        </p>
-        <p>
-          <strong>Role:</strong>{" "}
-          {adminData.role === "main" ? "Main Admin" : "Sub Admin"}
-        </p>
+        <p><strong>Name:</strong> {adminData.name}</p>
+        <p><strong>ID:</strong> {adminData.id}</p>
+        <p><strong>Role:</strong> {adminData.role === "main" ? "Main Admin" : "Sub Admin"}</p>
       </div>
 
       {/* Departments */}
       <div>
         <h3>Departments</h3>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "10px",
-            marginBottom: "20px",
-          }}
-        >
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
           {departments.map((dept) => (
             <button
               key={dept}
@@ -95,19 +81,9 @@ export default function AdminPortal() {
       {selectedDept && (
         <div style={{ marginTop: "2rem" }}>
           <h3>{selectedDept} Department</h3>
-          <p>
-            <strong>Total Students:</strong>{" "}
-            {studentCount[selectedDept] || 0}
-          </p>
+          <p><strong>Total Students:</strong> {studentCount[selectedDept] || 0}</p>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              flexWrap: "wrap",
-              margin: "15px 0",
-            }}
-          >
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", margin: "15px 0" }}>
             {years.map((year) => (
               <button
                 key={year}
@@ -119,9 +95,7 @@ export default function AdminPortal() {
                   color: "#fff",
                   border: "none",
                 }}
-                onClick={() =>
-                  navigate(`/department/${selectedDept}/year/${year}`)
-                }
+                onClick={() => navigate(`/department/${selectedDept}/year/${year}`)}
               >
                 Year {year}
               </button>

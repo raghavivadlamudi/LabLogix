@@ -1,45 +1,48 @@
-const express = require("express");
+import express from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import Admin from "../models/Admin.js";
+import Student from "../models/Student.js";
+import Faculty from "../models/Faculty.js";
+
 const router = express.Router();
-const Student = require("../models/Student");
-const Faculty = require("../models/Faculty");
-const bcrypt = require("bcryptjs"); // optional for hashed passwords
-const jwt = require("jsonwebtoken");
 
-// SECRET for JWT (store in .env in real app)
-const JWT_SECRET = "your_jwt_secret";
+// POST /api/auth/login
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
-// STUDENT LOGIN
-router.post("/student-login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const student = await Student.findOne({ email });
-    if (!student) return res.status(401).json({ message: "Student not registered yet" });
+    // Check in Admin, Student, Faculty collections
+    let user = await Admin.findOne({ email });
+    let role = "admin";
 
-    // If using plain passwords (not recommended in production)
-    if (student.password !== password) return res.status(401).json({ message: "Invalid credentials" });
+    if (!user) {
+      user = await Faculty.findOne({ email });
+      role = "faculty";
+    }
 
-    // create JWT
-    const token = jwt.sign({ id: student._id, role: "student" }, JWT_SECRET);
-    res.json({ token, student });
+    if (!user) {
+      user = await Student.findOne({ email });
+      role = "student";
+    }
+
+    if (!user) return res.status(400).json({ message: "User not found or not registered yet" });
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+    // Create JWT token
+    const token = jwt.sign(
+      { id: user._id, role },
+      process.env.JWT_SECRET,
+      { expiresIn: "8h" }
+    );
+
+    res.json({ token, role, user });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
-// FACULTY LOGIN
-router.post("/faculty-login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const faculty = await Faculty.findOne({ email });
-    if (!faculty) return res.status(401).json({ message: "Faculty not registered yet" });
-
-    if (faculty.password !== password) return res.status(401).json({ message: "Invalid credentials" });
-
-    const token = jwt.sign({ id: faculty._id, role: "faculty" }, JWT_SECRET);
-    res.json({ token, faculty });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-module.exports = router;
+export default router;
