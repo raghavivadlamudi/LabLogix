@@ -1,35 +1,37 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("student"); // student by default
   const navigate = useNavigate();
 
-  // Static users for testing
-  const users = [
-    { email: "admin1@gmail.com", password: "admin123", role: "admin" },
-    { email: "faculty1@gmail.com", password: "faculty123", role: "faculty" },
-    { email: "student1@gmail.com", password: "student123", role: "student" }
-  ];
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    try {
+      const res = await fetch(`http://localhost:5000/api/auth/${role}-login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
 
-    // Find user from static array
-    const user = users.find(u => u.email === email && u.password === password);
+      if (res.ok) {
+        // Save user info & token
+        localStorage.setItem("role", role);
+        localStorage.setItem(role, JSON.stringify(data));
 
-    if (user) {
-      // Save role in localStorage (optional)
-      localStorage.setItem("role", user.role);
-
-      // Navigate based on role
-      if (user.role === "admin") navigate("/admin-dashboard");
-      else if (user.role === "faculty") navigate("/faculty-dashboard");
-      else if (user.role === "student") navigate("/student-dashboard");
-    } else {
-      alert("Invalid credentials");
+        // Navigate to appropriate dashboard
+        if (role === "admin") navigate("/admin-dashboard");
+        else if (role === "faculty") navigate("/faculty-dashboard");
+        else if (role === "student") navigate("/student-dashboard");
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error connecting to server");
     }
   };
 
@@ -38,25 +40,33 @@ export default function Login() {
       <div className="login-container">
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
-          <div className="input-box">
+          <div>
+            <label>Role:</label>
+            <select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="student">Student</option>
+              <option value="faculty">Faculty</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div>
             <input
               type="email"
               required
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <label>Email</label>
           </div>
-          <div className="input-box">
+          <div>
             <input
               type="password"
               required
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <label>Password</label>
           </div>
-          <button type="submit" className="btn">Login</button>
+          <button type="submit">Login</button>
         </form>
       </div>
     </div>

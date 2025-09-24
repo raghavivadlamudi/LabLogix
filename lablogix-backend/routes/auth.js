@@ -1,34 +1,42 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 const router = express.Router();
+const Student = require("../models/Student");
+const Faculty = require("../models/Faculty");
+const bcrypt = require("bcryptjs"); // optional for hashed passwords
+const jwt = require("jsonwebtoken");
 
-// Register route
-router.post("/register", async (req, res) => {
+// SECRET for JWT (store in .env in real app)
+const JWT_SECRET = "your_jwt_secret";
+
+// STUDENT LOGIN
+router.post("/student-login", async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashedPassword, role });
-    await user.save();
-    res.json({ message: "User registered successfully" });
+    const { email, password } = req.body;
+    const student = await Student.findOne({ email });
+    if (!student) return res.status(401).json({ message: "Student not registered yet" });
+
+    // If using plain passwords (not recommended in production)
+    if (student.password !== password) return res.status(401).json({ message: "Invalid credentials" });
+
+    // create JWT
+    const token = jwt.sign({ id: student._id, role: "student" }, JWT_SECRET);
+    res.json({ token, student });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Login route
-router.post("/login", async (req, res) => {
+// FACULTY LOGIN
+router.post("/faculty-login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "User not found" });
+    const faculty = await Faculty.findOne({ email });
+    if (!faculty) return res.status(401).json({ message: "Faculty not registered yet" });
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(400).json({ message: "Invalid password" });
+    if (faculty.password !== password) return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, "your_jwt_secret");
-    res.json({ token, role: user.role, name: user.name });
+    const token = jwt.sign({ id: faculty._id, role: "faculty" }, JWT_SECRET);
+    res.json({ token, faculty });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
