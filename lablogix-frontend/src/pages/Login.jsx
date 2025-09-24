@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../App.css"; // make sure your CSS file is linked
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -40,33 +41,41 @@ export default function Login() {
       <div className="login-container">
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
-          <div>
-            <label>Role:</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <div className="input-box">
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="role-select"
+            >
               <option value="student">Student</option>
               <option value="faculty">Faculty</option>
               <option value="admin">Admin</option>
             </select>
           </div>
-          <div>
+
+          <div className="input-box">
             <input
               type="email"
               required
-              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <label>Email</label>
           </div>
-          <div>
+
+          <div className="input-box">
             <input
               type="password"
               required
-              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <label>Password</label>
           </div>
-          <button type="submit">Login</button>
+
+          <button type="submit" className="btn">
+            Login
+          </button>
         </form>
       </div>
     </div>
