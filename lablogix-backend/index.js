@@ -1,29 +1,35 @@
-// index.js (existing)
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+// index.js
+import express from "express"; // use ES6 imports if you are using type: "module" in package.json
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
 
-const authRoutes = require("./routes/auth");
-const submissionRoutes = require("./routes/submission");
-const adminRoutes = require("./routes/admin"); // <--- add this
+import authRoutes from "./routes/auth.js";
+import submissionRoutes from "./routes/submission.js";
+import adminRoutes from "./routes/admin.js";
+
+dotenv.config(); // Load environment variables from .env
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads")); // serve uploaded files
 
 // MongoDB connection
-mongoose.connect("mongodb+srv://vlssanthoshivajjiparthi_db_user:vKcGEpWzi89Jwr1Y@cluster0.y3aocnj.mongodb.net/LabLogix?retryWrites=true&w=majority&appName=Cluster0")
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/submissions", submissionRoutes);
-app.use("/api/admin", adminRoutes); // <--- add this
+app.use("/api/admin", adminRoutes);
 
 // Test route
 app.get("/", (req, res) => res.send("Backend is running!"));
 
-const PORT = 5000;
+// Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
