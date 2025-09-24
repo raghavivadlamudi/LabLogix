@@ -13,7 +13,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads")); // serve uploaded files
 
 // MongoDB connection
-mongoose.connect("mongodb://127.0.0.1:27017/lablogix")
+mongoose.connect("mongodb+srv://vlssanthoshivajjiparthi_db_user:vKcGEpWzi89Jwr1Y@cluster0.y3aocnj.mongodb.net/LabLogix?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
