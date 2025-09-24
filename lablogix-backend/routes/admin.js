@@ -1,10 +1,12 @@
-const express = require("express");
-const Student = require("../models/Student");
-const Faculty = require("../models/Faculty");
+import express from "express";
+import bcrypt from "bcryptjs";
+
+import Student from "../models/Student.js";
+import Faculty from "../models/Faculty.js";
 
 const router = express.Router();
 
-// Get all departments with student counts
+// GET departments + student counts
 router.get("/departments", async (req, res) => {
   try {
     const departments = ["CSE", "AI", "IT", "ECE", "EEE", "MECH", "CIVIL"];
@@ -20,26 +22,53 @@ router.get("/departments", async (req, res) => {
   }
 });
 
-// Register a student
+// POST /api/admin/register-student
 router.post("/register-student", async (req, res) => {
   try {
-    const student = new Student(req.body);
+    const { email, password, name, department, year } = req.body;
+
+    const existing = await Student.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Student already exists" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const student = new Student({
+      email,
+      password: hashedPassword,
+      name,
+      department,
+      year
+    });
+
     await student.save();
     res.json({ message: "Student registered successfully", student });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
-// Register a faculty
+// POST /api/admin/register-faculty
 router.post("/register-faculty", async (req, res) => {
   try {
-    const faculty = new Faculty(req.body);
+    const { email, password, name, department } = req.body;
+
+    const existing = await Faculty.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Faculty already exists" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const faculty = new Faculty({
+      email,
+      password: hashedPassword,
+      name,
+      department
+    });
+
     await faculty.save();
     res.json({ message: "Faculty registered successfully", faculty });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
-module.exports = router;
+export default router;
