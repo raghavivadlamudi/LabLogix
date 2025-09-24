@@ -1,61 +1,47 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css"; // make sure your CSS file is linked
+import "../App.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student"); // student by default
   const navigate = useNavigate();
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok) {
-      // Save user info & token
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      if (res.ok) {
+        // Save token, role, and user info
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Navigate based on role
-      if (data.role === "admin") navigate("/admin-dashboard");
-      else if (data.role === "faculty") navigate("/faculty-dashboard");
-      else if (data.role === "student") navigate("/student-dashboard");
-    } else {
-      alert(data.message || "Login failed");
+        // Navigate to appropriate dashboard
+        if (data.role === "admin") navigate("/admin-dashboard");
+        else if (data.role === "faculty") navigate("/faculty-dashboard");
+        else if (data.role === "student") navigate("/student-dashboard");
+      } else {
+        alert(data.message || "Invalid credentials");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error connecting to server");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Error connecting to server");
-  }
-};
-
+  };
 
   return (
     <div className="full-page">
       <div className="login-container">
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
-          <div className="input-box">
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="role-select"
-            >
-              <option value="student">Student</option>
-              <option value="faculty">Faculty</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-
           <div className="input-box">
             <input
               type="email"
