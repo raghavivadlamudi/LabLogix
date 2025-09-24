@@ -8,33 +8,36 @@ export default function Login() {
   const [role, setRole] = useState("student"); // student by default
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`http://localhost:5000/api/auth/${role}-login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
+const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-      if (res.ok) {
-        // Save user info & token
-        localStorage.setItem("role", role);
-        localStorage.setItem(role, JSON.stringify(data));
+    const data = await res.json();
 
-        // Navigate to appropriate dashboard
-        if (role === "admin") navigate("/admin-dashboard");
-        else if (role === "faculty") navigate("/faculty-dashboard");
-        else if (role === "student") navigate("/student-dashboard");
-      } else {
-        alert(data.message || "Login failed");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error connecting to server");
+    if (res.ok) {
+      // Save user info & token
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Navigate based on role
+      if (data.role === "admin") navigate("/admin-dashboard");
+      else if (data.role === "faculty") navigate("/faculty-dashboard");
+      else if (data.role === "student") navigate("/student-dashboard");
+    } else {
+      alert(data.message || "Login failed");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to server");
+  }
+};
+
 
   return (
     <div className="full-page">
