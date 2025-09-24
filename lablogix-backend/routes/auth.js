@@ -12,7 +12,6 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Check in Admin, Student, Faculty collections
     let user = await Admin.findOne({ email });
     let role = "admin";
 
@@ -26,20 +25,33 @@ router.post("/login", async (req, res) => {
       role = "student";
     }
 
-    if (!user) return res.status(400).json({ message: "User not found or not registered yet" });
+    if (!user)
+      return res
+        .status(401)
+        .json({ message: "User not found or not assigned yet" });
 
-    // Compare password
+    // Compare hashed password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
 
-    // Create JWT token
+    // Generate JWT token
     const token = jwt.sign(
       { id: user._id, role },
       process.env.JWT_SECRET,
       { expiresIn: "8h" }
     );
 
-    res.json({ token, role, user });
+    res.json({
+      token,
+      role,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        department: user.department || null,
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
