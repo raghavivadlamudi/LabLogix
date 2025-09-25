@@ -1,6 +1,8 @@
-const express = require("express");
-const multer = require("multer");
-const Submission = require("../models/Submission");
+// routes/submission.js
+import express from "express";
+import multer from "multer";
+import Submission from "../models/Submission.js"; // ✅ use .js for ES module
+
 const router = express.Router();
 
 // Multer configuration for file storage
@@ -8,6 +10,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
 });
+
 const upload = multer({ storage });
 
 // Upload lab record
@@ -20,6 +23,7 @@ router.post("/upload", upload.single("labFile"), async (req, res) => {
       studentId,
       filePath: req.file.path
     });
+
     await newSubmission.save();
     res.json({ message: "File uploaded successfully!", filePath: req.file.path });
   } catch (err) {
@@ -37,5 +41,5 @@ router.get("/", async (req, res) => {
   }
 });
 
-module.exports = router;
-
+// ✅ ES Module default export
+export default router;

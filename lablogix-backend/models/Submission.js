@@ -1,28 +1,29 @@
-// routes/submission.js
-import express from "express";
-import Submission from "../models/Submission.js";
+// models/Submission.js
+import mongoose from "mongoose";
 
-const router = express.Router();
-
-// Example: get all submissions
-router.get("/", async (req, res) => {
-  try {
-    const submissions = await Submission.find();
-    res.json(submissions);
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
+const submissionSchema = new mongoose.Schema({
+  studentId: {
+    type: String,
+    required: true
+  },
+  filePath: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    default: "Pending" // Can be "Pending", "Evaluated", etc.
+  },
+  feedback: {
+    type: String,
+    default: ""
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
-// Example: create new submission
-router.post("/", async (req, res) => {
-  try {
-    const newSubmission = new Submission(req.body);
-    await newSubmission.save();
-    res.status(201).json(newSubmission);
-  } catch (err) {
-    res.status(400).json({ error: "Invalid data" });
-  }
-});
+const Submission = mongoose.model("Submission", submissionSchema);
 
-export default router; // ✅ ES module default export
+export default Submission; // ✅ ES module default export
