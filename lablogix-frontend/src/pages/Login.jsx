@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
-
-export default function Login() {
+import "../App.css"
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -16,57 +18,65 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        // Save token, role, and user info
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        // Navigate to appropriate dashboard
-        if (data.role === "admin") navigate("/admin-dashboard");
-        else if (data.role === "faculty") navigate("/faculty-dashboard");
-        else if (data.role === "student") navigate("/student-dashboard");
-      } else {
-        alert(data.message || "Invalid credentials");
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.message || "Login failed");
+        setLoading(false);
+        return;
       }
+
+      const data = await res.json();
+      console.log("Login success:", data);
+
+      // Save token to localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Redirect based on role
+      if (data.role === "admin") navigate("/admin/dashboard");
+      else if (data.role === "faculty") navigate("/faculty/dashboard");
+      else if (data.role === "student") navigate("/student/dashboard");
+      else navigate("/");
+
+      setLoading(false);
     } catch (err) {
-      console.error(err);
-      alert("Error connecting to server");
+      console.error("Fetch error:", err);
+      alert("Could not reach backend. Check server.");
+      setLoading(false);
     }
   };
 
   return (
-    <div className="full-page">
-      <div className="login-container">
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
-          <div className="input-box">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <label>Email</label>
-          </div>
+    <div className="login-container">
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
 
-          <div className="input-box">
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <label>Password</label>
-          </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
 
-          <button type="submit" className="btn">
-            Login
-          </button>
-        </form>
-      </div>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
     </div>
   );
-}
+};
+
+export default Login;

@@ -25,7 +25,10 @@ router.get("/departments", async (req, res) => {
 // POST /api/admin/register-student
 router.post("/register-student", async (req, res) => {
   try {
-    const { email, password, name, department, year } = req.body;
+    let { email, password, name, department, year, section, yearOfJoining } = req.body;
+
+    // normalize email
+    email = email.toLowerCase();
 
     const existing = await Student.findOne({ email });
     if (existing) return res.status(400).json({ message: "Student already exists" });
@@ -37,7 +40,9 @@ router.post("/register-student", async (req, res) => {
       password: hashedPassword,
       name,
       department,
-      year
+      year,
+      section,
+      yearOfJoining
     });
 
     await student.save();
@@ -47,10 +52,14 @@ router.post("/register-student", async (req, res) => {
   }
 });
 
+
 // POST /api/admin/register-faculty
 router.post("/register-faculty", async (req, res) => {
   try {
-    const { email, password, name, department } = req.body;
+    let { email, password, name, department } = req.body;
+
+    // normalize email
+    email = email.toLowerCase();
 
     const existing = await Faculty.findOne({ email });
     if (existing) return res.status(400).json({ message: "Faculty already exists" });
@@ -70,5 +79,6 @@ router.post("/register-faculty", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 export default router;
