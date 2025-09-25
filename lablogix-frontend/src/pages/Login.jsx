@@ -1,82 +1,82 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css"
-const Login = () => {
+import "../App.css"; // ✅ Import your CSS
+
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setError("");
 
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email, password }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
-        alert(data.message || "Login failed");
-        setLoading(false);
+        setError(data.message || "Login failed");
         return;
       }
 
-      const data = await res.json();
-      console.log("Login success:", data);
-
-      // Save token to localStorage
+      // ✅ Save token & role
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
-      localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Redirect based on role
-      if (data.role === "admin") navigate("/admin/dashboard");
-      else if (data.role === "faculty") navigate("/faculty/dashboard");
-      else if (data.role === "student") navigate("/student/dashboard");
-      else navigate("/");
+      console.log("Login successful:", data);
 
-      setLoading(false);
+      // ✅ Redirect based on role
+      if (data.role === "admin") navigate("/admin-dashboard");
+      else if (data.role === "faculty") navigate("/faculty-dashboard");
+      else navigate("/student-dashboard");
     } catch (err) {
-      console.error("Fetch error:", err);
-      alert("Could not reach backend. Check server.");
-      setLoading(false);
+      console.error("Login error:", err);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+    <div className="full-page">
+      <div className="login-container">
+        <h2>Login</h2>
 
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+        <form onSubmit={handleLogin}>
+          <div className="input-box">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <label>Email</label>
+          </div>
+
+          <div className="input-box">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <label>Password</label>
+          </div>
+
+          <button type="submit" className="btn">Login</button>
+        </form>
+      </div>
     </div>
   );
-};
+}
 
 export default Login;
