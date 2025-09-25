@@ -1,8 +1,8 @@
 import React from "react";
-import MainAdminDashboard from "../components/Dashboard/MainAdminDashboard";
-import SubAdminDashboard from "../components/Dashboard/SubAdminDashboard";
-import FacultyDashboard from "../components/Dashboard/FacultyDashboard";
-import StudentDashboard from "../components/Dashboard/StudentDashboard";
+import MainAdminDashboard from "../components/Dashboard/MainAdminDashboard.jsx";
+import SubAdminDashboard from "../components/Dashboard/SubAdminDashboard.jsx";
+import FacultyDashboard from "../components/Dashboard/FacultyDashboard/FacultyDashboard.jsx";
+import StudentDashboard from "../components/Dashboard/StudentDashboard.jsx";
 
 export default function Home() {
   const role = localStorage.getItem("role");
