@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css"; // ✅ Import your CSS
+import "../App.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,9 +15,7 @@ function Login() {
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
@@ -28,13 +26,11 @@ function Login() {
         return;
       }
 
-      // ✅ Save token & role
+      // Save token & role
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
 
-      console.log("Login successful:", data);
-
-      // ✅ Redirect based on role
+      // Redirect based on role
       if (data.role === "admin") navigate("/admin-dashboard");
       else if (data.role === "faculty") navigate("/faculty-dashboard");
       else navigate("/student-dashboard");
@@ -54,22 +50,24 @@ function Login() {
         <form onSubmit={handleLogin}>
           <div className="input-box">
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <label>Email</label>
+            <label htmlFor="email">Email</label>
           </div>
 
           <div className="input-box">
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
           </div>
 
           <button type="submit" className="btn">Login</button>
