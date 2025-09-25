@@ -1,22 +1,15 @@
-import { Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import StudentPortal from "./pages/StudentPortal";
-import FacultyPortal from "./pages/FacultyPortal";
-import AdminPortal from "./pages/AdminPortal";
-import RegisterStudent from "./pages/RegisterStudent";
-import RegisterFaculty from "./pages/RegisterFaculty";
+import Home from "./pages/Home";
 
-function App() {
+export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/student-dashboard" element={<StudentPortal />} />
-      <Route path="/faculty-dashboard" element={<FacultyPortal />} />
-      <Route path="/admin-dashboard" element={<AdminPortal />} />
-      <Route path="/register-student" element={<RegisterStudent />} />
-      <Route path="/register-faculty" element={<RegisterFaculty />} />
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
-
-export default App;

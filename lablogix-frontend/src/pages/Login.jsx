@@ -1,80 +1,48 @@
 import React, { useState } from "react";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
 
-function Login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-
+  const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Login failed");
-        return;
-      }
-
-      // Save token & role
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-
-      // Redirect based on role
-      if (data.role === "admin") navigate("/admin-dashboard");
-      else if (data.role === "faculty") navigate("/faculty-dashboard");
-      else navigate("/student-dashboard");
+      const res = await api.post("/users/login", { email, password });
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
+      navigate("/home");
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Something went wrong. Please try again later.");
+      alert(err.response.data.message || "Login failed");
     }
   };
 
   return (
-    <div className="full-page">
-      <div className="login-container">
-        <h2>Login</h2>
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        <form onSubmit={handleLogin}>
-          <div className="input-box">
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <label htmlFor="email">Email</label>
-          </div>
-
-          <div className="input-box">
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <label htmlFor="password">Password</label>
-          </div>
-
-          <button type="submit" className="btn">Login</button>
-        </form>
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-96">
+        <h2 className="text-2xl mb-4">Login</h2>
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full mb-3 p-2 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full mb-3 p-2 border rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          className="w-full bg-blue-500 text-white py-2 rounded"
+          onClick={handleLogin}
+        >
+          Login
+        </button>
       </div>
     </div>
   );
 }
-
-export default Login;
