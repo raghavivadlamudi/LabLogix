@@ -1,0 +1,14 @@
+[
+  {
+    "id": "a1",
+    "title": "Digital Logic Lab - Experiment 1",
+    "description": "Design and simulate a 4-bit adder.",
+    "dueDate": "2025-12-20"
+  },
+  {
+    "id": "a2",
+    "title": "Data Structures - Assignment 2",
+    "description": "Implement stack using linked list.",
+    "dueDate": "2025-12-22"
+  }
+]

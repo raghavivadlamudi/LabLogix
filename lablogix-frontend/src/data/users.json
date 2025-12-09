@@ -1,17 +1,6 @@
 [
-  {
-    "email": "student1@lablogix.com",
-    "password": "student123",
-    "role": "student"
-  },
-  {
-    "email": "faculty1@lablogix.com",
-    "password": "faculty123",
-    "role": "faculty"
-  },
-  {
-    "email": "admin@lablogix.com",
-    "password": "admin123",
-    "role": "admin"
-  }
+  { "email": "student1@lablogix.com", "password": "student123", "role": "student", "name": "Student One" },
+  { "email": "student2@lablogix.com", "password": "student123", "role": "student", "name": "Student Two" },
+  { "email": "faculty1@lablogix.com", "password": "faculty123", "role": "faculty", "name": "Faculty One" },
+  { "email": "admin@lablogix.com", "password": "admin123", "role": "admin", "name": "Admin One" }
 ]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "s1",
+    "assignmentId": "a1",
+    "studentEmail": "student1@lablogix.com",
+    "fileName": "adder_solution.pdf",
+    "submittedAt": "2025-12-10T10:15:00Z",
+    "status": "submitted",
+    "grade": null,
+    "feedback": ""
+  },
+  {
+    "id": "s2",
+    "assignmentId": "a2",
+    "studentEmail": "student2@lablogix.com",
+    "fileName": "stack_impl.zip",
+    "submittedAt": "2025-12-11T14:50:00Z",
+    "status": "submitted",
+    "grade": null,
+    "feedback": ""
+  }
+]

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../api'                      // backend API wrapper (used if not found locally)
+// removed backend api import because you're working frontend-only for now
 import users from '../data/users.json'       // static frontend users
 import '../styles/SriVishnuLogin.css'
 import logo from '../assets/logo.png'
@@ -13,6 +13,17 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  // If already logged in (role present), redirect immediately
+  useEffect(() => {
+    const role = localStorage.getItem('role')
+    if (role) {
+      if (role === 'student') navigate('/student')
+      else if (role === 'faculty') navigate('/faculty')
+      else if (role === 'admin') navigate('/admin')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const loginLocalUser = (user) => {
     // store minimal session data for client-side routing
     localStorage.setItem('role', user.role)
@@ -24,46 +35,33 @@ export default function Login() {
     else navigate('/')
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
-    const emailTrim = email.trim()
+    const emailTrim = email.trim().toLowerCase()
+
     try {
-      // 1) Check static frontend users first
+      // 1) Check static frontend users only (no backend call)
       const localUser = users.find(
-        (u) => u.email.toLowerCase() === emailTrim.toLowerCase() && u.password === password
+        (u) => u.email.toLowerCase() === emailTrim && u.password === password
       )
 
       if (localUser) {
-        // simulate a small delay so UX is smoother
+        // small delay for UX (shows loading)
         setTimeout(() => {
           setLoading(false)
           loginLocalUser(localUser)
-        }, 300)
+        }, 250)
         return
       }
 
-      // 2) If not found locally, try backend (if you have one)
-      //    This keeps functionality compatible when you later add a backend.
-      const res = await api.post('/api/auth/login', { email: emailTrim, password })
-      const { token, user } = res.data
-
-      // persist token + user info
-      localStorage.setItem('token', token)
-      localStorage.setItem('role', user.role)
-      localStorage.setItem('email', user.email)
-
-      // navigate based on role from backend
-      if (user.role === 'student') navigate('/student')
-      else if (user.role === 'faculty') navigate('/faculty')
-      else if (user.role === 'admin') navigate('/admin')
-      else navigate('/')
+      // 2) If not found locally, show friendly error (no backend)
+      setError('Invalid email or password')
     } catch (err) {
-      // prefer backend error message if present
-      const msg = err?.response?.data?.message || err?.message || 'Login failed'
-      setError(msg)
+      setError('Login failed. Try again.')
+      console.error('Login error:', err)
     } finally {
       setLoading(false)
     }
@@ -78,7 +76,7 @@ export default function Login() {
         <div className="left-box">
           <img src={logo} alt="Logo" className="logo" />
           <h2 className="title">Vishnu Logix</h2>
-          <p className="description">LabLogix - "Submit,Evaluate,Celebrate"</p>
+          <p className="description">LabLogix - "Submit, Evaluate, Celebrate"</p>
         </div>
 
         <div className="right-box">
