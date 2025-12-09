@@ -1,27 +1,45 @@
-import { Toaster } from '@/components/ui/sonner';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from '@/contexts/AuthContext';
-import Index from './pages/Index';
-import NotFound from './pages/NotFound';
+import React from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Login from './components/Login'
+import Student from './pages/Student'
+import Faculty from './pages/Faculty'
+import Admin from './pages/Admin'
+import Layout from './components/Layout'
+import ProtectedRoute from './components/ProtectedRoute'
 
-const queryClient = new QueryClient();
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Login />} />
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      <Route element={<Layout />}>
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute roles={['student']}>
+              <Student />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty"
+          element={
+            <ProtectedRoute roles={['faculty']}>
+              <Faculty />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute roles={['admin']}>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
 
-export default App;
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
+}

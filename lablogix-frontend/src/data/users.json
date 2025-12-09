@@ -1,0 +1,17 @@
+[
+  {
+    "email": "student1@lablogix.com",
+    "password": "student123",
+    "role": "student"
+  },
+  {
+    "email": "faculty1@lablogix.com",
+    "password": "faculty123",
+    "role": "faculty"
+  },
+  {
+    "email": "admin@lablogix.com",
+    "password": "admin123",
+    "role": "admin"
+  }
+]
