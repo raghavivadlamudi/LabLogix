@@ -3,42 +3,75 @@ import StudentProfile from '../components/StudentProfile'
 import ProgressCard from '../components/ProgressCard'
 import ProgramCard from '../components/ProgramCard'
 import '../styles/student.css'
-import assignments from '../data/assignments.json' // optional, used for counts
+import assignments from '../data/assignments.json'
+import logo from '../assets/logo.png'
 
 export default function Student() {
   const email = localStorage.getItem('email') || 'student1@lablogix.com'
-  const [programs, setPrograms] = useState([])
-  const [stats, setStats] = useState({ enrolled: 1, inProgress: 1, completed: 0, coursesEnrolled: 0 })
+  const [programs, setPrograms] = useState([]) // empty -> show program list
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({ enrolled: 0, inProgress: 0, completed: 0, coursesEnrolled: 0 })
 
+  // Load mock data once (safe - dependency array empty)
   useEffect(() => {
-    // Example mock programs — you can replace this or load from data file
-    const mockPrograms = [
+    // small simulated delay to show loading state
+    const t = setTimeout(() => {
+      // inside Student.jsx useEffect replace mockPrograms with this
+const mockPrograms = [
+  {
+    id: 'p1',
+    title: '2023-AIDS-B',
+    image: logo,
+    description: 'No Description Provided',
+    // years must be an array of year objects, each with courses array
+    years: [
       {
-        id: 'p1',
-        title: '2023-AIDS-B',
-        image: '/src/assets/logo.png',
-        years: 1,
-        semesters: 2,
-        courses: 5,
-        description: 'No Description Provided'
-      }
-    ]
-    setPrograms(mockPrograms)
+        label: 'I YEAR',
+        status: 'IN PROGRESS',
+        courses: [
+          { title: 'COMMUNICATIVE ENGLISH', type: 'OPT' },
+          { title: 'ENGINEERING PHYSICS', type: 'OPT' },
+          { title: 'LINEAR ALGEBRA & CALCULUS', type: 'OPT' },
+          { title: 'BASIC CIVIL AND MECHANICAL ENGINEERING', type: 'OPT' },
+          { title: 'INTRODUCTION TO PROGRAMMING', type: 'MAN' },
+          { title: 'VEDIC DIAGNOSTIC TEST', type: 'OPT' }
+        ]
+      },
+      { label: 'II YEAR–I', courses: [] },
+      { label: 'II YEAR–II', courses: [] },
+      { label: 'III YEAR–I', courses: [] },
+      { label: 'III YEAR–II', courses: [] }
+    ],
+    // keep summary numbers if you want to show them in cards
+    semesters: 6,
+    courses: 51
+  }
+];
 
-    // derive some sample stats (replace with real data later)
-    setStats({
-      enrolled: mockPrograms.length,
-      inProgress: 1,
-      completed: 0,
-      coursesEnrolled: assignments?.length || 0
-    })
+      setPrograms(mockPrograms)
+      setStats({
+        enrolled: mockPrograms.length,
+        inProgress: 1,
+        completed: 0,
+        coursesEnrolled: assignments?.length || 0
+      })
+      setLoading(false)
+    }, 100)
+
+    return () => clearTimeout(t)
   }, [])
 
   return (
     <div className="student-page">
       <div className="student-top">
         <div className="left-col">
-          <StudentProfile name="Lalitha Sri Santhoshi" email={email} college="Sri Vishnu Engineering College for Women" dept="AI & Data Science" />
+          <StudentProfile
+            name="LALITHA SRI SANTHOSHI VAJJIPARTHI"
+            email={email}
+            college="Shri Vishnu Engineering College for Women, Bhimavaram"
+            dept="Artificial Intelligence and Data Science"
+          />
+
           <ProgressCard xp={643809} level={13} nextLevelXp={330000} />
         </div>
 
@@ -76,13 +109,25 @@ export default function Student() {
             </div>
           </div>
 
-          <div className="program-list">
-            {programs.map(p => <ProgramCard key={p.id} program={p} />)}
-          </div>
+          {loading ? (
+            <div className="loader">Loading programs…</div>
+          ) : (
+            <div className="program-list">
+              {programs.length === 0 ? (
+                <div className="empty">No programs found.</div>
+              ) : (
+                programs.map(p => (
+                  <div key={p.id} className="program-wrapper">
+                    <ProgramCard program={p} />
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         <div className="right-blank">
-          {/* reserved for future widgets */}
+          {/* reserved for announcements / widgets */}
         </div>
       </div>
     </div>

@@ -25,9 +25,9 @@ export default function Navbar() {
           {email && <span style={{ marginRight: 12 }}>{email}</span>}
           {role && <span style={{ marginRight: 12, textTransform: 'capitalize' }}>({role})</span>}
 
-          {role === 'student' && <Link to="/student" style={{ color: '#fff', marginRight: 12 }}>Dashboard</Link>}
-          {role === 'faculty' && <Link to="/faculty" style={{ color: '#fff', marginRight: 12 }}>Dashboard</Link>}
-          {role === 'admin' && <Link to="/admin" style={{ color: '#fff', marginRight: 12 }}>Dashboard</Link>}
+          {role === 'student' && <Link to="/Student" style={{ color: '#fff', marginRight: 12 }}>Dashboard</Link>}
+          {role === 'faculty' && <Link to="/Faculty" style={{ color: '#fff', marginRight: 12 }}>Dashboard</Link>}
+          {role === 'admin' && <Link to="/Admin" style={{ color: '#fff', marginRight: 12 }}>Dashboard</Link>}
 
           <button onClick={logout} style={{ background: '#fff', color: '#0b6b66', border: 'none', padding: '6px 10px', borderRadius: 4 }}>Logout</button>
         </div>

@@ -5,8 +5,8 @@ import Login from './components/Login'
 import Student from './pages/Student'
 import Faculty from './pages/Faculty'
 import Admin from './pages/Admin'
+import ProgramDetail from './pages/ProgramDetail'
 import Layout from './components/Layout'
-import ProtectedRoute from './components/ProtectedRoute'
 
 function RootRedirect() {
   const role = localStorage.getItem('role')
@@ -28,24 +28,13 @@ export default function App() {
 
       {/* Protected routes wrapped in Layout (navbar) */}
       <Route element={<Layout />}>
-        <Route path="/student" element={
-          <ProtectedRoute roles={['student']}>
-            <Student />
-          </ProtectedRoute>
-        }/>
+        <Route path="/student" element={<Student />} />
+        <Route path="/faculty" element={<Faculty />} />
+        <Route path="/admin" element={<Admin />} />
+      <Route path="/program/:id" element={<ProgramDetail />} />
 
-        <Route path="/faculty" element={
-          <ProtectedRoute roles={['faculty']}>
-            <Faculty />
-          </ProtectedRoute>
-        }/>
-
-        <Route path="/admin" element={
-          <ProtectedRoute roles={['admin']}>
-            <Admin />
-          </ProtectedRoute>
-        }/>
       </Route>
+
 
       {/* fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -5,6 +5,7 @@ import users from '../data/users.json'       // static frontend users
 import '../styles/SriVishnuLogin.css'
 import logo from '../assets/logo.png'
 import Vishnu from '../assets/Vishnu.jpg'
+import { useLocation } from 'react-router-dom'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -14,26 +15,35 @@ export default function Login() {
   const navigate = useNavigate()
 
   // If already logged in (role present), redirect immediately
-  useEffect(() => {
-    const role = localStorage.getItem('role')
-    if (role) {
-      if (role === 'student') navigate('/student')
-      else if (role === 'faculty') navigate('/faculty')
-      else if (role === 'admin') navigate('/admin')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+ const location = useLocation()
+
+useEffect(() => {
+  // read role once from localStorage (string or null)
+  const role = localStorage.getItem('role')
+  if (!role) return // nothing to do if not logged in
+
+  // normalize to lowercase path so casing won't cause loops
+  const rolePath = `/${role.toLowerCase()}` // e.g. '/student', '/faculty', '/admin'
+  const currentPath = (location?.pathname || '').toLowerCase()
+
+  // don't navigate if already on the correct page
+  if (currentPath === rolePath) return
+
+  // navigate once; replace to avoid history spam
+  navigate(rolePath, { replace: true })
+}, [navigate, location])
 
   const loginLocalUser = (user) => {
-    // store minimal session data for client-side routing
-    localStorage.setItem('role', user.role)
-    localStorage.setItem('email', user.email)
-    // navigate to role specific route
-    if (user.role === 'student') navigate('/student')
-    else if (user.role === 'faculty') navigate('/faculty')
-    else if (user.role === 'admin') navigate('/admin')
-    else navigate('/')
-  }
+  // store minimal session data for client-side routing
+  localStorage.setItem('role', user.role)
+  localStorage.setItem('email', user.email)
+  // navigate to role specific route (lowercase paths)
+  if (user.role === 'student') navigate('/student')
+  else if (user.role === 'faculty') navigate('/faculty')
+  else if (user.role === 'admin') navigate('/admin')
+  else navigate('/')
+}
+
 
   const handleSubmit = (e) => {
     e.preventDefault()

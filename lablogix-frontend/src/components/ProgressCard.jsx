@@ -1,7 +1,7 @@
 import React from 'react'
 
-export default function ProgressCard({ xp = 643809, level = 13, nextLevelXp = 330000 }) {
-  const pct = Math.min(100, Math.round((xp / (nextLevelXp || 1)) * 100))
+export default function ProgressCard({ xp = 0, level = 1, nextLevelXp = 1000 }) {
+  const pct = Math.round(Math.min(100, (xp / (nextLevelXp || 1)) * 100))
   return (
     <div className="progress-card">
       <h4>Level up!</h4>
@@ -9,10 +9,8 @@ export default function ProgressCard({ xp = 643809, level = 13, nextLevelXp = 33
         <div className="big-level">{level}</div>
         <div className="xp-info">
           <div className="xp-count">{xp.toLocaleString()}</div>
-          <div className="xp-bar">
-            <div className="xp-fill" style={{ width: `${pct}%` }} />
-          </div>
-          <div className="next-level">next level in <strong>{(nextLevelXp - (xp % nextLevelXp)).toLocaleString()}</strong></div>
+          <div className="xp-bar"><div className="xp-fill" style={{ width: `${pct}%` }} /></div>
+          <div className="next-level">next level in <strong>{Math.max(0, nextLevelXp - (xp % nextLevelXp)).toLocaleString()}</strong></div>
         </div>
       </div>
     </div>
