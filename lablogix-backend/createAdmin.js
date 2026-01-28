@@ -20,10 +20,11 @@ async function createAdmin() {
   const hashedPassword = await bcrypt.hash("admin123", salt);
 
   const admin = new Admin({
-    name: "Sri Charani",
-    email: "admin1@gmail.com",
-    password: hashedPassword
-  });
+  name: "Sri Charani",
+  email: "admin1@gmail.com",
+  password: hashedPassword,
+  role: "admin"   // ⭐ MUST BE EXACTLY "admin"
+});
 
   await admin.save();
   console.log("Admin created successfully!");
