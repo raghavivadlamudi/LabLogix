@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import Student from "../models/Student.js";
 import Admin from "../models/Admin.js";
-// import Faculty from "../models/Faculty.js";  // add later when you create faculty
+import Faculty from "../models/Faculty.js";  // add later when you create faculty
 
 export const unifiedLogin = async (req, res) => {
   const { identifier, password } = req.body;
@@ -30,14 +30,14 @@ export const unifiedLogin = async (req, res) => {
     }
 
     // 3️⃣ Later: Try FACULTY (when model exists)
-    /*
+    
     if (!user) {
       user = await Faculty.findOne({ email: identifier.toLowerCase() });
       if (user) {
         role = "faculty";
       }
     }
-    */
+    
 
     // 4️⃣ If no user found anywhere
     if (!user) {
